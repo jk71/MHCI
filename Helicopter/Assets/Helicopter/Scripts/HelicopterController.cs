@@ -47,6 +47,7 @@ public class HelicopterController : MonoBehaviour
         ControlPanel.KeyPressed += OnKeyPressed;
 	}
 
+    /*
 	void Update () {
 
 
@@ -66,17 +67,51 @@ public class HelicopterController : MonoBehaviour
         }
 
 
-       // controllerRotation = OVRInput.GetLocalControllerRotation;
+        controllerRotation = OVRInput.GetLocalControllerRotation(OVRInput.Controller);
+        
 
         //############################################################
 
     }
 
+    */
+    //public Transform controller;
+
+    public static bool leftHanded { get; private set; }
+    private Quaternion rotation = Quaternion.identity;
+
+    void Awake()
+    {
+        #if UNITY_EDITOR
+        leftHanded = false;        // (whichever you want to test here)
+        #else
+        leftHanded = OVRInput.GetControllerPositionTracked(OVRInput.Controller.LTouch);
+        #endif
+    }
+
+    void Update()
+    {
+        
+        OVRInput.Controller c = leftHanded ? OVRInput.Controller.LTouch : OVRInput.Controller.RTouch;
+        if (OVRInput.GetControllerPositionTracked(c))
+        {
+            //controller.localRotation = OVRInput.GetLocalControllerRotation(c);
+            //controller.localPosition = OVRInput.GetLocalControllerPosition(c);
+
+            //controllerRotation = controller.localRotation;
+
+            //Debug.Log("SDIJSDFÖIGJDIFGJÖDIJGIDSJGÖSDJÖGSJdddd" + controllerRotation.ToString());
+            rotation = OVRInput.GetLocalControllerRotation(c);
+        }
+    }
+
     void FixedUpdate()
     {
+        JoyStickController();
         LiftProcess();
         MoveProcess();
         TiltProcess();
+        
     }
 
     private void MoveProcess()
@@ -182,6 +217,28 @@ public class HelicopterController : MonoBehaviour
         hMove.y += tempY;
         hMove.y = Mathf.Clamp(hMove.y, -1, 1);
 
+    }
+
+    private void JoyStickController()
+    {
+        Vector2 touchPos = OVRInput.Get(OVRInput.Axis2D.PrimaryTouchpad);
+        EngineForce = touchPos.y * 50 + 50;
+
+        Debug.Log("TouchPos: " + touchPos.ToString());
+
+
+        // Tigger 
+        if (OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger))
+        {
+            EngineForce += 0.1f;
+        }
+
+        // Movement
+        hMove.x = rotation.y;
+        hMove.x = Mathf.Clamp(hMove.x, -1, 1);
+
+        hMove.y = rotation.x;
+        hMove.y = Mathf.Clamp(hMove.y, -1, 1);
     }
 
     private void OnCollisionEnter()

@@ -1525,7 +1525,8 @@ public class OVRManager : MonoBehaviour
 		wasPositionTracked = tracker.isPositionTracked;
 
 		display.Update();
-		OVRInput.Update();
+
+        te();
 
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
 		if (enableMixedReality || prevEnableMixedReality)
