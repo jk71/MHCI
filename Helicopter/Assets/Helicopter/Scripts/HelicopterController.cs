@@ -45,6 +45,8 @@ public class HelicopterController : MonoBehaviour
 	void Start ()
 	{
         ControlPanel.KeyPressed += OnKeyPressed;
+
+        Debug.Log("TESTCONTROLLERSTATUS: " + UnityEngine.XR.XRDevice.isPresent);
 	}
 
     /*
@@ -100,14 +102,20 @@ public class HelicopterController : MonoBehaviour
 
             //controllerRotation = controller.localRotation;
 
-            //Debug.Log("SDIJSDFÖIGJDIFGJÖDIJGIDSJGÖSDJÖGSJdddd" + controllerRotation.ToString());
+            
             rotation = OVRInput.GetLocalControllerRotation(c);
+            //Debug.Log("ControllerRotation: " + rotation.ToString());
         }
     }
 
     void FixedUpdate()
     {
-        JoyStickController();
+
+        if (UnityEngine.XR.XRDevice.isPresent)
+        {
+            JoyStickController();
+        }
+      
         LiftProcess();
         MoveProcess();
         TiltProcess();
@@ -222,9 +230,16 @@ public class HelicopterController : MonoBehaviour
     private void JoyStickController()
     {
         Vector2 touchPos = OVRInput.Get(OVRInput.Axis2D.PrimaryTouchpad);
-        EngineForce = touchPos.y * 50 + 50;
+        EngineForce = (touchPos.y + 1) * 25;
 
-        Debug.Log("TouchPos: " + touchPos.ToString());
+        Debug.Log("TouchPos: " + touchPos);
+       // Debug.Log("Engine " + EngineForce);
+       
+        if(touchPos.x != 0f || touchPos.y != 0f)
+        {
+        //    Debug.Log("TouchPos: " + touchPos.ToString());
+        }
+        
 
 
         // Tigger 
@@ -234,11 +249,11 @@ public class HelicopterController : MonoBehaviour
         }
 
         // Movement
-        hMove.x = rotation.y;
-        hMove.x = Mathf.Clamp(hMove.x, -1, 1);
+        hMove.x = rotation.y*2;
+        //hMove.x = Mathf.Clamp(hMove.x, -10, 10);
 
-        hMove.y = rotation.x;
-        hMove.y = Mathf.Clamp(hMove.y, -1, 1);
+        hMove.y = rotation.x*2 - 0.5f * (- Mathf.Sign(rotation.w));
+        //hMove.y = Mathf.Clamp(hMove.y, -10, 10);
     }
 
     private void OnCollisionEnter()

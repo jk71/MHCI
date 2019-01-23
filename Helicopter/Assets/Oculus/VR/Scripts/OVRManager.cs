@@ -1526,8 +1526,6 @@ public class OVRManager : MonoBehaviour
 
 		display.Update();
 
-        te();
-
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
 		if (enableMixedReality || prevEnableMixedReality)
 		{
