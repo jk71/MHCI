@@ -49,8 +49,8 @@ public class HelicopterController : MonoBehaviour
         Debug.Log("TESTCONTROLLERSTATUS: " + UnityEngine.XR.XRDevice.isPresent);
 	}
 
-    /*
-	void Update () {
+    
+	/*void Update () {
 
 
         //TESTING SECTION
@@ -69,14 +69,14 @@ public class HelicopterController : MonoBehaviour
         }
 
 
-        controllerRotation = OVRInput.GetLocalControllerRotation(OVRInput.Controller);
+
         
 
         //############################################################
 
-    }
+    }*/
 
-    */
+    
     //public Transform controller;
 
     public static bool leftHanded { get; private set; }
@@ -107,7 +107,7 @@ public class HelicopterController : MonoBehaviour
             //Debug.Log("ControllerRotation: " + rotation.ToString());
         }
     }
-
+    
     void FixedUpdate()
     {
 
@@ -229,6 +229,20 @@ public class HelicopterController : MonoBehaviour
 
     private void JoyStickController()
     {
+
+
+        OVRInput.Update();
+
+        
+        if (OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger))
+        {
+            Shoot();
+        }
+
+     
+
+
+
         Vector2 touchPos = OVRInput.Get(OVRInput.Axis2D.PrimaryTouchpad);
         EngineForce = (touchPos.y + 1) * 25;
 
@@ -239,21 +253,39 @@ public class HelicopterController : MonoBehaviour
         {
         //    Debug.Log("TouchPos: " + touchPos.ToString());
         }
-        
 
 
-        // Tigger 
-        if (OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger))
-        {
-            EngineForce += 0.1f;
-        }
 
         // Movement
-        hMove.x = rotation.y*2;
-        //hMove.x = Mathf.Clamp(hMove.x, -10, 10);
+        if (!IsOnGround)
+        {
+            hMove.x = rotation.y * 2;
+            //hMove.x = Mathf.Clamp(hMove.x, -10, 10);
 
-        hMove.y = rotation.x*2 - 0.5f * (- Mathf.Sign(rotation.w));
-        //hMove.y = Mathf.Clamp(hMove.y, -10, 10);
+            hMove.y = rotation.x * 2 - 0.5f * (-Mathf.Sign(rotation.w));
+            //hMove.y = Mathf.Clamp(hMove.y, -10, 10);
+        }
+
+    }
+
+    private void Shoot()
+    {
+
+        GameObject bullet = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        bullet.transform.position = GameObject.Find("HelicpterModel").transform.position;
+        Quaternion direction = GameObject.Find("HelicopterModel").transform.rotation;
+       // Path(direction, bullet);
+        
+
+    }
+
+    private void Path(Quaternion direction, GameObject bullet)
+    {
+        while (true)
+        {
+           
+
+        }
     }
 
     private void OnCollisionEnter()
