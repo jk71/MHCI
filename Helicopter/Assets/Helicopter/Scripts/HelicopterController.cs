@@ -4,12 +4,18 @@ using UnityEngine.UI;
 public class HelicopterController : MonoBehaviour
 {
     public AudioSource HelicopterSound;
+    public AudioSource BulletSound;
     public ControlPanel ControlPanel;
     public Rigidbody HelicopterModel;
     public HeliRotorController MainRotorController;
     public HeliRotorController SubRotorController;
 
     public Quaternion controllerRotation;
+
+    public GameObject projectile;
+    public GameObject explosion;
+
+    private Vector2 touchPos;
 
     public float TurnForce = 3f;
     public float ForwardForce = 10f;
@@ -49,6 +55,7 @@ public class HelicopterController : MonoBehaviour
         Debug.Log("TESTCONTROLLERSTATUS: " + UnityEngine.XR.XRDevice.isPresent);
 	}
 
+  
     
 	/*void Update () {
 
@@ -86,9 +93,10 @@ public class HelicopterController : MonoBehaviour
     {
         #if UNITY_EDITOR
         leftHanded = false;        // (whichever you want to test here)
-        #else
+#else
         leftHanded = OVRInput.GetControllerPositionTracked(OVRInput.Controller.LTouch);
-        #endif
+#endif
+      
     }
 
     void Update()
@@ -215,7 +223,13 @@ public class HelicopterController : MonoBehaviour
                         HelicopterModel.AddRelativeTorque(0f, force, 0);
                     }
                     break;
-
+                    
+                    case PressedKeyCode.ShootPressed:
+                    {
+                        Shoot();
+                    }
+                    break;
+                    
             }
         }
 
@@ -239,11 +253,12 @@ public class HelicopterController : MonoBehaviour
             Shoot();
         }
 
-     
+    
+        touchPos = OVRInput.Get(OVRInput.Axis2D.PrimaryTouchpad);
+       
 
+       
 
-
-        Vector2 touchPos = OVRInput.Get(OVRInput.Axis2D.PrimaryTouchpad);
         EngineForce = (touchPos.y + 1) * 25;
 
         Debug.Log("TouchPos: " + touchPos);
@@ -271,22 +286,19 @@ public class HelicopterController : MonoBehaviour
     private void Shoot()
     {
 
-        GameObject bullet = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        bullet.transform.position = GameObject.Find("HelicpterModel").transform.position;
-        Quaternion direction = GameObject.Find("HelicopterModel").transform.rotation;
-       // Path(direction, bullet);
-        
+        GameObject bullet = Instantiate(projectile, GameObject.Find("BulletSpawn").transform.position, Quaternion.identity) as GameObject;
+        bullet.GetComponent<Rigidbody>().AddForce(transform.forward * 10000);
+
+        GameObject rocket = Instantiate(projectile, GameObject.Find("RocketSpawn").transform.position, Quaternion.identity) as GameObject;
+        rocket.GetComponent<Rigidbody>().AddForce(transform.forward * 10000);
+
+        Instantiate(explosion, GameObject.Find("BulletSpawn").transform.position, Quaternion.identity);
+        Instantiate(explosion, GameObject.Find("RocketSpawn").transform.position, Quaternion.identity);
+        BulletSound.Play();
 
     }
 
-    private void Path(Quaternion direction, GameObject bullet)
-    {
-        while (true)
-        {
-           
 
-        }
-    }
 
     private void OnCollisionEnter()
     {

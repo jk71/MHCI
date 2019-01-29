@@ -7,5 +7,6 @@ public enum PressedKeyCode
     LeftPressed,
     RightPressed,
     TurnLeftPressed,
-    TurnRightPressed
+    TurnRightPressed,
+    ShootPressed
 }

@@ -23,6 +23,8 @@ public class ControlPanel : MonoBehaviour {
     KeyCode TurnRight = KeyCode.E;
     [SerializeField]
     KeyCode MusicOffOn = KeyCode.M;
+    [SerializeField]
+    KeyCode Shoot = KeyCode.U;
     
     private KeyCode[] keyCodes;
 
@@ -37,7 +39,8 @@ public class ControlPanel : MonoBehaviour {
                             Left,
                             Right,
                             TurnLeft,
-                            TurnRight
+                            TurnRight,
+                            Shoot
                         };
 
     }
