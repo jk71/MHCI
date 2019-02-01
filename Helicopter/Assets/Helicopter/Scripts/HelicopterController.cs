@@ -11,6 +11,7 @@ public class HelicopterController : MonoBehaviour
     public HeliRotorController SubRotorController;
 
     public Quaternion controllerRotation;
+    private int frameCounter;
 
     public GameObject projectile;
     public GameObject explosion;
@@ -22,6 +23,7 @@ public class HelicopterController : MonoBehaviour
     public float ForwardTiltForce = 20f;
     public float TurnTiltForce = 30f;
     public float EffectiveHeight = 100f;
+    public float BulletSpeed = 20000f;
 
     public float turnTiltForcePercent = 1.5f;
     public float turnForcePercent = 1.3f;
@@ -285,20 +287,22 @@ public class HelicopterController : MonoBehaviour
 
     private void Shoot()
     {
+        frameCounter = (frameCounter + 1) % 10;
+        if(frameCounter == 0)
+        {
+            GameObject bullet = Instantiate(projectile, GameObject.Find("BulletSpawn").transform.position, Quaternion.identity) as GameObject;
+            bullet.GetComponent<Rigidbody>().AddForce(transform.forward * BulletSpeed);
 
-        GameObject bullet = Instantiate(projectile, GameObject.Find("BulletSpawn").transform.position, Quaternion.identity) as GameObject;
-        bullet.GetComponent<Rigidbody>().AddForce(transform.forward * 10000);
+            GameObject rocket = Instantiate(projectile, GameObject.Find("RocketSpawn").transform.position, Quaternion.identity) as GameObject;
+            rocket.GetComponent<Rigidbody>().AddForce(transform.forward * BulletSpeed);
 
-        GameObject rocket = Instantiate(projectile, GameObject.Find("RocketSpawn").transform.position, Quaternion.identity) as GameObject;
-        rocket.GetComponent<Rigidbody>().AddForce(transform.forward * 10000);
-
-        Instantiate(explosion, GameObject.Find("BulletSpawn").transform.position, Quaternion.identity);
-        Instantiate(explosion, GameObject.Find("RocketSpawn").transform.position, Quaternion.identity);
-        BulletSound.Play();
+            Instantiate(explosion, GameObject.Find("BulletSpawn").transform.position, Quaternion.identity);
+            Instantiate(explosion, GameObject.Find("RocketSpawn").transform.position, Quaternion.identity);
+            BulletSound.Play();
+        }
+      
 
     }
-
-
 
     private void OnCollisionEnter()
     {
