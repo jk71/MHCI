@@ -19,7 +19,8 @@ public class ProjectileBehaviour : MonoBehaviour {
 
     private void OnCollisionEnter(Collision collision)
     {
-       // Destroy(gameObject);
+        // Destroy(gameObject);
+        Debug.Log("Projectile Collision");
 
     }
 }

@@ -16,7 +16,7 @@ public class HelicopterController : MonoBehaviour
     public GameObject projectile;
     public GameObject explosion;
 
-    private Vector2 touchPos;
+    private Vector2 touchPos = new Vector2(0,-1);
 
     public float TurnForce = 3f;
     public float ForwardForce = 10f;
@@ -255,10 +255,13 @@ public class HelicopterController : MonoBehaviour
             Shoot();
         }
 
-    
-        touchPos = OVRInput.Get(OVRInput.Axis2D.PrimaryTouchpad);
+        if (OVRInput.Get(OVRInput.Touch.One))
+        {
+            touchPos = OVRInput.Get(OVRInput.Axis2D.PrimaryTouchpad);
+        }
        
 
+        Debug.Log("HFDJFDHODFJDFHJODSJGOAJAJAOJHAPORHJEOHJAERHO: " + OVRInput.Get(OVRInput.Button.One));
        
 
         EngineForce = (touchPos.y + 1) * 25;
